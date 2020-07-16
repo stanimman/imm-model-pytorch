@@ -7,5 +7,5 @@ def train():
     encoder()
     loss()
 
-train()
+
 

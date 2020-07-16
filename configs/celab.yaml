@@ -13,8 +13,9 @@ training:
     order_stream: True
     max_samples: 1000
   logdir: ${logdir}/${name}
-  datadir: ${celeba_data_dir}
-  batch: 50
+  datadir: /Users/stanley/Desktop/Stanley/Acadamics/dataset/celabA
+  datalabeldir: /Users/stanley/Desktop/Stanley/Acadamics/dataset/celabA
+  batch: 5
   allow_growth: True
   optim: Adam
   lr:

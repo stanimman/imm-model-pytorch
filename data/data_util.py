@@ -6,6 +6,8 @@ import pandas as pd
 from PIL import Image
 from skimage import io, transform
 from data.TPS_random_sampler import TPSRandomSampler
+import torch.nn.functional as F
+import numpy as np
 
 
 torch.manual_seed(0)
@@ -15,7 +17,7 @@ class CelabDataset(Dataset):
     filenames = os.listdir(datapath)
     self.full_filenames = [os.path.join(datapath, f) for f in filenames]
     lm_label = pd.read_csv(os.path.join(csv_file_path,csv_filename))
-    self.label = np.array(lm.iloc[:,2:], dtype=np.float32)
+    self.label = np.array(lm_label.iloc[:,1:], dtype=np.float32)
     self.transforms = transforms
 
   def __len__(self):

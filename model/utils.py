@@ -1,6 +1,7 @@
 
 import torch
 from torchvision import models
+import torch.nn.functional as F 
 
 
 class Vgg19(torch.nn.Module):
@@ -34,6 +35,7 @@ def perceptual_loss(fut_im,gen_im,mse=True):
   fu_Vgg19_Net  = Vgg19()
   gen_Vgg19_Net  = Vgg19()
   fut_im_Vgg19,gen_im_Vgg19  = fu_Vgg19_Net(fut_im),gen_Vgg19_Net(gen_im)
+  #https://openaccess.thecvf.com/content_ICCV_2017/papers/Chen_Photographic_Image_Synthesis_ICCV_2017_paper.pdf
   ws = [4.9,10.4,5.2,1.3,2.6,2.6]
   batch_size = gen_im_Vgg19[0].shape[0]
   loss = 0

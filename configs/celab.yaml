@@ -29,7 +29,7 @@ training:
 model:
     gauss_std: 0.10
     gauss_mode: 'gaus'
-    n_maps: 10
+    n_maps: 2
     map_sizes: [16]
 
     n_filters: 32

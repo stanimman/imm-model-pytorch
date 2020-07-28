@@ -49,8 +49,8 @@ batch = config['training']['batch']
 
 train_dl = torch.utils.data.DataLoader(train_celeb_ds,batch_size=batch, shuffle=True)
 valid_dl = torch.utils.data.DataLoader(valid_celeb_ds,batch_size=batch, shuffle=True)
-for image in train_dl:
-    print(image.size)
+#for image in train_dl:
+#    print(image.size)
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 dsts  = {"train": train_celeb_ds, "val": valid_celeb_ds}
 dataloaders = {"train": train_dl, "val": valid_dl}

@@ -1,4 +1,4 @@
-from model.imm_model import fin_model
+from model.imm_model import lmm_model
 from model.utils import perceptual_loss
 from data.data_util import CelabDataset,BatchTransform
 import torch 

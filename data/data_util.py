@@ -46,9 +46,9 @@ class BatchTransform(object):
 
     def exe(self, image, landmarks=None):
         #call _proc_im_pair
-        print("in exe")
+        #print("in exe")
         batch = self._proc_im_pair(image, landmarks=landmarks)
-        print(batch['image'].shape,batch['mask'].shape)
+        #print(batch['image'].shape,batch['mask'].shape)
         #call _apply_tps
         image, future_image, future_mask = self._apply_tps(batch['image'], batch['mask'])
 

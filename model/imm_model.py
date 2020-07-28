@@ -119,10 +119,10 @@ def get_gaussian_maps(mu, shape_hw, inv_std, mode='gaus'):
     #g_yx = g_yx.permute([0, 2, 3, 1])
     return g_yx
 
-def decoder_block(num_filter,map_size): # Need to check if we require map_size
+def decoder_block(num_filter,concat_shape): # Need to check if we require map_size
     filter = num_filter*8
     layers = []
-    conv1 = conv_block(ni=258,nf =filter,kernal=3,stride=1,pad=(1,1)) ## Need to remove hard coding
+    conv1 = conv_block(ni=concat_shape,nf =filter,kernal=3,stride=1,pad=(1,1)) ## Need to remove hard coding
     conv2 = conv_block(ni=filter,nf=filter,kernal=3,stride=1,pad=(1,1))
     filter1 = int(filter/2.0)
     upsamp_1 = nn.Upsample(scale_factor=2,mode='bilinear')
@@ -140,9 +140,9 @@ def decoder_block(num_filter,map_size): # Need to check if we require map_size
     return layers
 
 class ImageDecoder(nn.Module):
-    def __init__(self,num_filter,final_channel_size):
+    def __init__(self,num_filter,concat_shape,final_channel_size):
         super(ImageDecoder, self).__init__()
-        self.layers = decoder_block(32,16)
+        self.layers = decoder_block(num_filter,concat_shape)
         self.mod_layers = nn.ModuleList(self.layers)
         fin_shape = self.layers[-1][0].weight.shape[0]
         self.convf = nn.Conv2d(fin_shape,final_channel_size,kernel_size=1,stride=1)
@@ -155,9 +155,12 @@ class ImageDecoder(nn.Module):
 class lmm_model(nn.Module):
   def __init__(self,num_filter,final_channel_size,inv_std,nmaps=1,map_sizes=None,gauss_mode='gaus'):
     super(lmm_model, self).__init__()
+    self.concat_shape = num_filter*8 + nmaps
+    self.num_filter = num_filter
+    self.final_channel_size = final_channel_size
     self.image_encoder = ImageEncoder(num_filter)
     self.pose_encoder = PoseEncoder(num_filter,inv_std,nmaps=nmaps, map_sizes=map_sizes, gauss_mode='gaus')
-    self.image_decoder = ImageDecoder(num_filter, final_channel_size)
+    self.image_decoder = ImageDecoder(num_filter, self.concat_shape, final_channel_size)
 
   def forward(self,im,fut_im):
     enc_image = self.image_encoder(im)
@@ -171,21 +174,21 @@ class lmm_model(nn.Module):
 #PoseEncoder(32,10,[128,128]
 #torch.randn((1,3, 5, 5))
 #in = 
-inpu = torch.randn((2,3, 128, 128))
+""" inpu = torch.randn((2,3, 128, 128))
 Net = ImageEncoder(32)
 enc_img  = Net(inpu)
 print(enc_img.shape)
-Net1 = PoseEncoder(32,10,2,[16,16])    
+Net1 = PoseEncoder(32,10,10,[16])    
 co_ord,gauss_heat = Net1(inpu)
-Net2  = ImageDecoder(32,3)
+Net2  = ImageDecoder(32,266,3)
 embedding = torch.cat([enc_img,gauss_heat],dim=1)
 g_m = Net2(embedding)
 print(g_m.shape)
 
 
-fin_model = lmm_model(num_filter=32,final_channel_size=3,inv_std=10,nmaps=2,map_sizes=[16],gauss_mode='gaus')
+fin_model = lmm_model(num_filter=32,final_channel_size=3,inv_std=10,nmaps=10,map_sizes=[16],gauss_mode='gaus')
 img_in = torch.randn((2,3, 128, 128))
 fut_img_in = torch.randn((2,3, 128, 128))
 gen_img  = fin_model(img_in,fut_img_in)
 gen_img.shape
-print(gen_img.shape)
+print(gen_img.shape) """

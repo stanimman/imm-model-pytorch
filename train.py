@@ -38,7 +38,7 @@ def train_model(model,dsts,dataloaders,optimizer, scheduler, num_epochs=5):
             for inputs, labels in dataloaders[phase]:
                 inputs = inputs.to(device)
                 labels = labels.to(device)
-                if device = "cpu":
+                if device == "cpu":
                     inputs = inputs.type(torch.FloatTensor).permute([0,3,1,2]) # after permute shape is [B,C,H,W]
                     labels = labels.type(torch.FloatTensor) 
                 else:

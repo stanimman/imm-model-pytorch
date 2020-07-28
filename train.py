@@ -13,14 +13,9 @@ import datetime as dt
 ## This function just evaluate the loss / optimize  and returns model and the weight of the epoch which has highest accuracy
 
 
-def train_model(model, optimizer, scheduler, num_epochs=5):
-    train_celeb_ds  = CelabDataset(datapath = 'drive/My Drive/lmm_Model/img_align_celeba_sample',csv_file_path = 'drive/My Drive/lmm_Model/',csv_filename = 'list_landmarks_align_celeba_sample.csv')
-    valid_celeb_ds  = CelabDataset(datapath = 'drive/My Drive/lmm_Model/img_align_celeba_sample_val',csv_file_path = 'drive/My Drive/lmm_Model/',csv_filename = 'list_landmarks_align_celeba_sample_val.csv')
-    train_dl = torch.utils.data.DataLoader(train_celeb_ds,batch_size=4, shuffle=True,num_workers=4)
-    valid_dl = torch.utils.data.DataLoader(valid_celeb_ds,batch_size=4, shuffle=True,num_workers=4)
+def train_model(model,dsts,dataloaders,optimizer, scheduler, num_epochs=5):
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-    dataloaders = {"train": train_dl, "val": valid_dl}
-    dataset_sizes = {"train": len(train_celeb_ds),"val":len(valid_celeb_ds)}
+    dataset_sizes = {"train": len(dsts['train']),"val":len(dsts['val'])}
     print(dataset_sizes)
     since = time.time()
     best_model_wts = copy.deepcopy(model.state_dict())

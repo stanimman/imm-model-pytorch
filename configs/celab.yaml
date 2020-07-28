@@ -5,19 +5,22 @@ training:
   gradclip: 1.0
   dset: celeba
   train_dset_params:
-    dataset: celeba
-    subset: train
+     train_datadir: drive/My Drive/lmm_Model/img_align_celeba_sample
+     train_datalabeldir: drive/My Drive/lmm_Model
+     train_datalabelcsv: list_landmarks_align_celeba_sample.csv
+     valid_datadir: drive/My Drive/lmm_Model/img_align_celeba_sample_val
+     valid_datalabeldir: drive/My Drive/lmm_Model
+     valid_datalabelcsv: list_landmarks_align_celeba_sample_val.csv
+
   test_dset_params:
     dataset: mafl
     subset: test
     order_stream: True
     max_samples: 1000
-  logdir: ${logdir}/${name}
-  datadir: /Users/stanley/Desktop/Stanley/Acadamics/dataset/celabA
-  datalabeldir: /Users/stanley/Desktop/Stanley/Acadamics/dataset/celabA
-  batch: 5
+  batch: 4
   allow_growth: True
   optim: Adam
+  n_epoch: 5
   lr:
     start_val: 0.001
     step: 100000
@@ -25,11 +28,14 @@ training:
 
 model:
     gauss_std: 0.10
-    gauss_mode: 'rot'
+    gauss_mode: 'gaus'
     n_maps: 10
+    map_sizes: [16]
 
     n_filters: 32
     block_sizes: [1, 1, 1]
+    final_channel_size: 3
+    inv_std : 10
 
     n_filters_render: 32
     renderer_stride: 2

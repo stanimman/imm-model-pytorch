@@ -5,6 +5,7 @@ import os
 import pandas as pd
 from PIL import Image
 from skimage import io, transform
+import imageio
 from data.TPS_random_sampler import TPSRandomSampler
 import torch.nn.functional as F
 import numpy as np
@@ -27,11 +28,11 @@ class CelabDataset(Dataset):
   def __getitem__(self, idx):
       # returns transformed image with label
       #image = Image.open(self.full_filenames[idx])  # PIL image
-      image = io.imread(self.full_filenames[idx])
+      image = imageio.imread(self.full_filenames[idx])
       #print(image)
       if self.transforms:
             image = self.transforms(image)
-      #image = self.transforms(image)
+      image = torch.tensor(image)
       return image, self.label[idx].reshape(-1, 2)
 
 class BatchTransform(object):

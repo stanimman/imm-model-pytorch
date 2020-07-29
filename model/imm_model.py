@@ -43,7 +43,7 @@ class PoseEncoder(nn.Module):
         # get "x-y" coordinates:
         g_c_prob = torch.mean(x, axis=other_axis)  # B,W,NMAP
         g_c_prob = F.softmax(g_c_prob, dim=1)  # B,W,NMAP
-        coord_pt = torch.linspace(-1.0, 1.0, axis_size) # W
+        coord_pt = torch.linspace(-1.0, 1.0, axis_size).to(x.device) # W
         coord_pt = coord_pt.view([1, axis_size, 1])
         g_c = torch.sum(g_c_prob * coord_pt, axis=1)
         return g_c, g_c_prob
@@ -84,9 +84,9 @@ def get_gaussian_maps(mu, shape_hw, inv_std, mode='gaus'):
   
     mu_y, mu_x = mu[:, :, 0:1], mu[:, :, 1:2]
 
-    y = torch.linspace(-1.0, 1.0, shape_hw[0])
+    y = torch.linspace(-1.0, 1.0, shape_hw[0]).to(mu.device)
 
-    x = torch.linspace(-1.0, 1.0, shape_hw[1])
+    x = torch.linspace(-1.0, 1.0, shape_hw[1]).to(mu.device)
 
     if (mode in ['rot', 'flat']):
         mu_y, mu_x = torch.unsqueeze(mu_y, -1), torch.unsqueeze(mu_x, -1)

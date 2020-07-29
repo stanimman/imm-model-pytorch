@@ -34,6 +34,9 @@ class Vgg19(torch.nn.Module):
 def perceptual_loss(fut_im,gen_im,mse=True):
   fu_Vgg19_Net  = Vgg19()
   gen_Vgg19_Net  = Vgg19()
+  device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+  fu_Vgg19_Net = fu_Vgg19_Net.to(device)
+  gen_Vgg19_Net = gen_Vgg19_Net.to(device)
   fut_im_Vgg19,gen_im_Vgg19  = fu_Vgg19_Net(fut_im),gen_Vgg19_Net(gen_im)
   #https://openaccess.thecvf.com/content_ICCV_2017/papers/Chen_Photographic_Image_Synthesis_ICCV_2017_paper.pdf
   ws = [4.9,10.4,5.2,1.3,2.6,2.6]

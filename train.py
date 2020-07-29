@@ -19,7 +19,7 @@ def train_model(model,dsts,dataloaders,optimizer, scheduler, num_epochs=5):
     print(dataset_sizes)
     since = time.time()
     best_model_wts = copy.deepcopy(model.state_dict())
-    best_loss = 0.0
+    best_loss = 10000000.0
     for epoch in range(num_epochs):
         print('Epoch {}/{}'.format(epoch, num_epochs - 1))
         print('-' * 10)
@@ -38,12 +38,12 @@ def train_model(model,dsts,dataloaders,optimizer, scheduler, num_epochs=5):
             for inputs, labels in dataloaders[phase]:
                 inputs = inputs.to(device)
                 labels = labels.to(device)
-                #if device == "cpu":
-                inputs = inputs.type(torch.FloatTensor).permute([0,3,1,2]) # after permute shape is [B,C,H,W]
-                labels = labels.type(torch.FloatTensor) 
-                #else:
-                #    inputs = inputs.type(torch.cuda.FloatTensor).permute([0,3,1,2]) # after permute shape is [B,C,H,W]
-                #    labels = labels.type(torch.cuda.FloatTensor) 
+                if device == "cpu":
+                    inputs = inputs.type(torch.FloatTensor).permute([0,3,1,2]) # after permute shape is [B,C,H,W]
+                    labels = labels.type(torch.FloatTensor) 
+                else:
+                    inputs = inputs.type(torch.cuda.FloatTensor).permute([0,3,1,2]) # after permute shape is [B,C,H,W]
+                    labels = labels.type(torch.cuda.FloatTensor) 
                 deformed_batchc = BatchTransform()
                 deformed_batch = deformed_batchc.exe(inputs, landmarks=labels)
                 im, future_im, mask = deformed_batch['image'], deformed_batch['future_image'], deformed_batch['mask'] # shape is [B,C,H,W] 
@@ -69,7 +69,7 @@ def train_model(model,dsts,dataloaders,optimizer, scheduler, num_epochs=5):
                 phase, epoch_loss,))
             #print(preds[1:10],labels.data[1:10])
             # deep copy the model
-            if phase == 'valid' and epoch_loss > best_loss:
+            if phase == 'val' and epoch_loss < best_loss:
                 best_loss = epoch_loss
                 best_model_wts = copy.deepcopy(model.state_dict())
         #print()

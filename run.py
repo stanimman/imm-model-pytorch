@@ -56,8 +56,8 @@ dsts  = {"train": train_celeb_ds, "val": valid_celeb_ds}
 dataloaders = {"train": train_dl, "val": valid_dl}
     
 model = lmm_model(num_filter=num_filter,final_channel_size=final_channel_size,inv_std=inv_std,nmaps=n_maps,map_sizes=map_sizes,gauss_mode=gauss_mode)
-#if torch.cuda.is_available():
-#    model.cuda()
+if torch.cuda.is_available():
+    model.to(device)
 # Neural Net Parameters
 
 n_epoch = config['training']['n_epoch']

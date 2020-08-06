@@ -8,6 +8,7 @@ training:
      train_datadir: drive/My Drive/lmm_Model/img_align_celeba_sample
      train_datalabeldir: drive/My Drive/lmm_Model
      train_datalabelcsv: list_landmarks_align_celeba_sample.csv
+     train_datatype: image
      valid_datadir: drive/My Drive/lmm_Model/img_align_celeba_sample_val
      valid_datalabeldir: drive/My Drive/lmm_Model
      valid_datalabelcsv: list_landmarks_align_celeba_sample_val.csv

@@ -14,26 +14,48 @@ import numpy as np
 torch.manual_seed(0)
 
 class CelabDataset(Dataset):
-  def __init__(self,datapath,csv_file_path,csv_filename,data_type=None,transforms=None): #datatype is train or valid  
-    filenames = os.listdir(datapath)
-    self.full_filenames = [os.path.join(datapath, f) for f in filenames]
-    lm_label = pd.read_csv(os.path.join(csv_file_path,csv_filename))
-    self.label = np.array(lm_label.iloc[:,1:], dtype=np.float32)
+  def __init__(self,datapath,csv_file_path,csv_filename,data_type='image',transforms=None): #datatype is train or valid  
+    self.data_type = data_type
+    if self.data_type == 'image':
+        filenames = os.listdir(datapath)
+        self.full_filenames = [os.path.join(datapath, f) for f in filenames]
+        lm_label = pd.read_csv(os.path.join(csv_file_path,csv_filename))
+        self.label = np.array(lm_label.iloc[:,1:], dtype=np.float32)    
+    if self.data_type == 'video':
+        data_file = pd.read_csv(os.path.join(csv_file_path,csv_filename))
+        image_filename = data_type.iloc[:,0].tolist()
+        self.full_image_filenames = [os.path.join(datapath, f) for f in image_filename]
+        fut_image_filename = data_type.iloc[:,1].tolist()
+        self.full_fut_image_filenames = [os.path.join(datapath, f) for f in fut_image_filename]
+
     self.transforms = transforms
 
   def __len__(self):
-      # return size of dataset
-      return len(self.full_filenames)
+      # return size of datasetf 
+    if self.data_type == 'image':
+        return len(self.full_filenames)
+    if self.data_type == 'video':
+        return len(self.full_image_filenames)
 
   def __getitem__(self, idx):
       # returns transformed image with label
       #image = Image.open(self.full_filenames[idx])  # PIL image
-      image = imageio.imread(self.full_filenames[idx])
-      #print(image)
-      if self.transforms:
+    if self.data_type == 'image':
+        image = imageio.imread(self.full_filenames[idx])
+        if self.transforms:
             image = self.transforms(image)
-      image = torch.tensor(image)
-      return image, self.label[idx].reshape(-1, 2)
+        image = torch.tensor(image)
+        return image, self.label[idx].reshape(-1, 2)
+    if self.data_type == 'video':
+        image1 = imageio.imread(self.full_image_filenames[idx])
+        image2 = imageio.imread(self.full_fut_image_filenames[idx])
+        if self.transforms:
+            image1 = self.transforms(image1)
+            image2 = self.transforms(image2)
+        image1 = torch.tensor(image1)
+        image2 = torch.tensor(image2)
+        return image1, image2
+
 
 class BatchTransform(object):
     """ Preprocessing batch of pytorch tensors

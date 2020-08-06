@@ -13,7 +13,7 @@ import datetime as dt
 ## This function just evaluate the loss / optimize  and returns model and the weight of the epoch which has highest accuracy
 
 
-def train_model(model,dsts,dataloaders,optimizer, scheduler, num_epochs=5):
+def train_model(model,dsts,dataloaders,optimizer, scheduler, num_epochs=5,data_type='image'):
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     dataset_sizes = {"train": len(dsts['train']),"val":len(dsts['val'])}
     print(dataset_sizes)
@@ -43,11 +43,15 @@ def train_model(model,dsts,dataloaders,optimizer, scheduler, num_epochs=5):
                     labels = labels.type(torch.FloatTensor) 
                 else:
                     inputs = inputs.type(torch.cuda.FloatTensor).permute([0,3,1,2]) # after permute shape is [B,C,H,W]
-                    labels = labels.type(torch.cuda.FloatTensor) 
-                deformed_batchc = BatchTransform()
-                deformed_batch = deformed_batchc.exe(inputs, landmarks=labels)
-                im, future_im, mask = deformed_batch['image'], deformed_batch['future_image'], deformed_batch['mask'] # shape is [B,C,H,W] 
-                
+                    labels = labels.type(torch.cuda.FloatTensor)
+                if data_type == 'image': 
+                    deformed_batchc = BatchTransform()
+                    deformed_batch = deformed_batchc.exe(inputs, landmarks=labels)
+                    im, future_im, mask = deformed_batch['image'], deformed_batch['future_image'], deformed_batch['mask'] # shape is [B,C,H,W] 
+                if data_type == 'video': 
+                    
+                    im, future_im = inputs,labels
+
                 # zero the parameter gradients
                 optimizer.zero_grad()
                 # forward

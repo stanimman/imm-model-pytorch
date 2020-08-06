@@ -32,17 +32,21 @@ data_param = config['training']['train_dset_params']
 train_data_path = data_param['train_datadir']
 train_csv_file_path = data_param['train_datalabeldir']
 train_csv_filename = data_param['train_datalabelcsv']
+train_datatype = data_param['train_datatype']
 
 valid_data_path = data_param['valid_datadir']
 valid_csv_file_path = data_param['valid_datalabeldir']
 valid_csv_filename = data_param['valid_datalabelcsv']
 
+
 train_celeb_ds  = CelabDataset(datapath = train_data_path,
                 csv_file_path = train_csv_file_path,
-                csv_filename = train_csv_filename)
+                csv_filename = train_csv_filename,
+                data_type = train_datatype)
 valid_celeb_ds  = CelabDataset(datapath = valid_data_path,
                     csv_file_path = valid_csv_file_path,
-                    csv_filename = valid_csv_filename)
+                    csv_filename = valid_csv_filename,
+                    data_type = train_datatype)
 
 batch = config['training']['batch']
 
@@ -69,4 +73,4 @@ optimizer_ft = optim.Adam(list(filter(lambda p: p.requires_grad, model.parameter
                 lr = lr, betas=(0.9, 0.999), eps=1e-08, weight_decay=wts_decay, amsgrad=False)
 exp_lr_scheduler = lr_scheduler.StepLR(optimizer_ft, step_size=step_sz, gamma=0.1)
 model_ft = train_model(model, dsts,dataloaders,optimizer_ft, exp_lr_scheduler,
-                       num_epochs=n_epoch)
+                       num_epochs=n_epoch,data_type = train_datatype)

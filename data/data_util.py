@@ -23,9 +23,9 @@ class CelabDataset(Dataset):
         self.label = np.array(lm_label.iloc[:,1:], dtype=np.float32)    
     if self.data_type == 'video':
         data_file = pd.read_csv(os.path.join(csv_file_path,csv_filename))
-        image_filename = data_type.iloc[:,0].tolist()
+        image_filename = data_file.iloc[:,0].tolist()
         self.full_image_filenames = [os.path.join(datapath, f) for f in image_filename]
-        fut_image_filename = data_type.iloc[:,1].tolist()
+        fut_image_filename = data_file.iloc[:,1].tolist()
         self.full_fut_image_filenames = [os.path.join(datapath, f) for f in fut_image_filename]
 
     self.transforms = transforms

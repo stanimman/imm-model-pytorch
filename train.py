@@ -8,6 +8,7 @@ import copy
 from torch.optim import lr_scheduler
 import time
 import datetime as dt
+from tqdm import tqdm
 # Celab  = CelabDataset(datapath = 'drive/My Drive/lmm_Model/img_align_celeba_sample',csv_file_path = 'drive/My Drive/lmm_Model/',csv_filename = 'list_landmarks_align_celeba_sample.csv')
 # fin_model = lmm_model(num_filter=32,final_channel_size=3,inv_std=10,nmaps=2,map_sizes=[16],gauss_mode='gaus')
 ## This function just evaluate the loss / optimize  and returns model and the weight of the epoch which has highest accuracy
@@ -35,15 +36,21 @@ def train_model(model,dsts,dataloaders,optimizer, scheduler, num_epochs=5,data_t
             running_loss = 0.0
             running_corrects = 0
             # Iterate over data.# phase - train or validation
-            for inputs, labels in dataloaders[phase]:
+            for inputs, labels in tqdm(dataloaders[phase]):
                 inputs = inputs.to(device)
                 labels = labels.to(device)
                 if device == "cpu":
                     inputs = inputs.type(torch.FloatTensor).permute([0,3,1,2]) # after permute shape is [B,C,H,W]
-                    labels = labels.type(torch.FloatTensor) 
+                    if data_type == 'image': 
+                        labels = labels.type(torch.FloatTensor) 
+                    if data_type == 'video': 
+                        labels = labels.type(torch.FloatTensor).permute([0,3,1,2])
                 else:
                     inputs = inputs.type(torch.cuda.FloatTensor).permute([0,3,1,2]) # after permute shape is [B,C,H,W]
-                    labels = labels.type(torch.cuda.FloatTensor)
+                    if data_type == 'image': 
+                        labels = labels.type(torch.cuda.FloatTensor)
+                    if data_type == 'video':
+                         labels = labels.type(torch.FloatTensor).permute([0,3,1,2])
                 if data_type == 'image': 
                     deformed_batchc = BatchTransform()
                     deformed_batch = deformed_batchc.exe(inputs, landmarks=labels)

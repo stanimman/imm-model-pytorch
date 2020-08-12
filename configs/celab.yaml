@@ -21,7 +21,7 @@ training:
   batch: 4
   allow_growth: True
   optim: Adam
-  n_epoch: 5
+  n_epoch: 50
   lr:
     start_val: 0.001
     step: 100000

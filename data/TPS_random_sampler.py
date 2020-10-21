@@ -1,5 +1,5 @@
 # ==========================================================
-# Author: Ankush Gupta, Tomas Jakab
+# imm-model-code
 # ==========================================================
 import scipy.spatial.distance as ssd
 import numpy as np

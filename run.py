@@ -1,3 +1,5 @@
+import os
+os.environ["KMP_DUPLICATE_LIB_OK"]="TRUE"
 import yaml
 from argparse import ArgumentParser
 from model.imm_model import lmm_model
@@ -8,6 +10,7 @@ import torch.nn as nn
 import torch.optim as optim
 import copy
 from torch.optim import lr_scheduler
+
 
 
 parser = ArgumentParser()
@@ -71,6 +74,7 @@ step_sz = config['training']['lr']['step']
 
 optimizer_ft = optim.Adam(list(filter(lambda p: p.requires_grad, model.parameters())), 
                 lr = lr, betas=(0.9, 0.999), eps=1e-08, weight_decay=wts_decay, amsgrad=False)
+#optimizer_ft = optim.SGD(model.parameters(), lr=0.001, momentum=0.9)
 exp_lr_scheduler = lr_scheduler.StepLR(optimizer_ft, step_size=step_sz, gamma=0.1)
 model_ft = train_model(model, dsts,dataloaders,optimizer_ft, exp_lr_scheduler,
                        num_epochs=n_epoch,data_type = train_datatype)

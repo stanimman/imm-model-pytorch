@@ -5,26 +5,26 @@ training:
   gradclip: 1.0
   dset: celeba
   train_dset_params:
-     train_datadir: drive/My Drive/lmm_Model/img_align_celeba_sample
-     train_datalabeldir: drive/My Drive/lmm_Model
-     train_datalabelcsv: list_landmarks_align_celeba_sample.csv
+     train_datadir: data//train
+     train_datalabeldir: data
+     train_datalabelcsv: train_label.csv
      train_datatype: image
-     valid_datadir: drive/My Drive/lmm_Model/img_align_celeba_sample_val
-     valid_datalabeldir: drive/My Drive/lmm_Model
-     valid_datalabelcsv: list_landmarks_align_celeba_sample_val.csv
+     valid_datadir: data//valid
+     valid_datalabeldir: data
+     valid_datalabelcsv: valid_label.csv
 
   test_dset_params:
     dataset: mafl
     subset: test
     order_stream: True
     max_samples: 1000
-  batch: 4
+  batch: 80
   allow_growth: True
   optim: Adam
-  n_epoch: 50
+  n_epoch: 10
   lr:
     start_val: 0.001
-    step: 100000
+    step: 100
     decay: 0.95
 
 model:

@@ -39,7 +39,7 @@ def train_model(model,dsts,dataloaders,optimizer, scheduler, num_epochs=5,data_t
           # In Validation phase setting the model class - eval()
           for phase in ['train', 'val']:
               if phase == 'train':
-                  scheduler.step()
+                  #scheduler.step()
                   model.train()  # Set model to training mode
               else:
                   model.eval()   # Set model to evaluate mode
@@ -76,6 +76,7 @@ def train_model(model,dsts,dataloaders,optimizer, scheduler, num_epochs=5,data_t
                           optimizer.step()
                   running_loss += loss
               epoch_loss = running_loss / dataset_sizes[phase]
+              scheduler.step()
               print('{} Loss: {:.4f}'.format(
                   phase, epoch_loss,))
               #print(preds[1:10],labels.data[1:10])
